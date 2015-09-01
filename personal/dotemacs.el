@@ -15,4 +15,6 @@
 
 ;; cleanup on save
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
+
+;; Run in daemon mode
 (server-start)
