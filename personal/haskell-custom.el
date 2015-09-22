@@ -1,26 +1,73 @@
+;;------------------------------
+;; Haskell
+;;------------------------------
+
+(setq exec-path (cons "~/.stack/programs/x86_64-linux/ghc-7.8.4/bin/" exec-path))
 (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
-(add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
+(add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
 (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
+(add-hook 'haskell-mode-hook #'hindent-mode)
+
+(setq haskell-process-load-or-reload-prompt t)
+(setq hindent-style "johan-tibell")
+(setq haskell-indent-offset 4)
+(setq haskell-indent-spaces 4)
+(setq haskell-indent-after-keywords (quote (("where" 4 0) ("of" 4) ("do" 4) ("mdo" 4) ("rec" 4) ("in" 4 0) ("{" 4) "if" "then" "else" "let")))
+(setq haskell-stylish-on-save t)
 
 (custom-set-variables
- '(haskell-package-manager-name "stack")
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(flycheck-ghc-no-user-package-database t)
  '(haskell-process-auto-import-loaded-modules t)
  '(haskell-process-log t)
  '(haskell-process-suggest-remove-import-lines t)
  '(haskell-process-type (quote stack-ghci))
- '(refactorerl-base-path "/Users/kelly/erlang/refactorerl-0.8A.10.12")
- '(safe-local-variable-values (quote ((erlang-indent-level . 4)))))
 
 (defmacro hcRequire (name &rest body)
   `(if (require ',name nil t)
        (progn ,@body)
      (warn (concat (format "%s" ',name) " NOT FOUND"))))
 
-(setq haskell-stylish-on-save t)
+;; Do this to get a variable in scope
+(auto-complete-mode)
+(defun hc-ac-haskell-candidates (prefix)
+  (let ((cs (haskell-process-get-repl-completions (haskell-process) prefix)))
+    (remove-if (lambda (c) (string= "" c)) cs)))
+(ac-define-source haskell
+  '((candidates . (hc-ac-haskell-candidates ac-prefix))))
+(defun hc-haskell-hook ()
+  (add-to-list 'ac-sources 'ac-source-haskell))
+(add-hook 'haskell-mode-hook 'hc-haskell-hook)
+
+;; cd /src/ && git clone git@github.com:ajnsit/ghc-mod.git
+;; cd /src/ghc-mod ; git checkout stack-support ; stack build
+(add-to-list 'load-path "/src/ghc-mod/.stack-work/install/x86_64-linux/lts-2.17/7.8.4/lib/x86_64-linux-ghc-7.8.4/ghc-mod-0")
+
+(require 'hs-lint)
+(defun hlint-haskell-mode-hook ()
+  (local-set-key "\C-cu" 'hs-lint))
+(add-hook 'haskell-mode-hook 'hlint-haskell-mode-hook)
+
+(ac-define-source ghc-mod
+                  '((depends ghc)
+                    (candidates . (ghc-select-completion-symbol))
+                    (symbol . "s")
+                    (cache)))
+(defun my-ac-haskell-mode ()
+  (setq ac-sources '(ac-source-words-in-same-mode-buffers
+                     ac-source-dictionary
+                     ac-source-ghc-mod)))
+(add-hook 'haskell-mode-hook 'my-ac-haskell-mode)
+
+(require 'auto-complete-haskell)
 
 (eval-after-load 'haskell-mode
   '(progn
-     (define-key haskell-mode-map (kbd "C-c C-l") 'haskell-process-load-or-reload)
+     (define-key haskell-mode-map (kbd "C-u C-c C-l") 'haskell-process-load-or-reload)
+     (define-key haskell-mode-map (kbd "C-c C-l") 'haskell-process-load-file)
      (define-key haskell-mode-map (kbd "C-c C-z") 'haskell-interactive-switch)
      (define-key haskell-mode-map (kbd "C-`") 'haskell-interactive-bring)
      (define-key haskell-mode-map (kbd "C-c C-t") 'haskell-process-do-type)
@@ -54,3 +101,11 @@
                 '(haskell-left-arrows
                   (regexp . "\\(\\s-+\\)\\(<-\\|←\\)\\s-+")
                   (modes quote (haskell-mode literate-haskell-mode)))))
+
+(load-library "inf-haskell")
+
+(defun my-inf-haskell-hook ()
+  (setq comint-prompt-regexp
+        (concat comint-prompt-regexp "\\|^.> ")))
+
+(add-to-list 'inferior-haskell-mode-hook 'my-inf-haskell-hook)
