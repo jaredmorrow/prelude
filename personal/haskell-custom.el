@@ -6,25 +6,20 @@
 (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
 (add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
 (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
-(add-hook 'haskell-mode-hook #'hindent-mode)
 
 (setq haskell-process-load-or-reload-prompt t)
-(setq hindent-style "johan-tibell")
 (setq haskell-indent-offset 4)
 (setq haskell-indent-spaces 4)
 (setq haskell-indent-after-keywords (quote (("where" 4 0) ("of" 4) ("do" 4) ("mdo" 4) ("rec" 4) ("in" 4 0) ("{" 4) "if" "then" "else" "let")))
 (setq haskell-stylish-on-save t)
 
 (custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(flycheck-ghc-no-user-package-database t)
+ '(haskell-package-manager-name "stack")
  '(haskell-process-auto-import-loaded-modules t)
  '(haskell-process-log t)
  '(haskell-process-suggest-remove-import-lines t)
  '(haskell-process-type (quote stack-ghci))
+
 
 (defmacro hcRequire (name &rest body)
   `(if (require ',name nil t)
@@ -109,3 +104,5 @@
         (concat comint-prompt-regexp "\\|^.> ")))
 
 (add-to-list 'inferior-haskell-mode-hook 'my-inf-haskell-hook)
+
+;;; haskell-custom.el ends here
