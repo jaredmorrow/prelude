@@ -1,7 +1,12 @@
+;;; Haskell --- Customizations
+;;; Commentary:
+;;;    Custom haskell hooks
+
 ;;------------------------------
 ;; Haskell
 ;;------------------------------
 
+;;; Code:
 (setq exec-path (cons "~/.stack/programs/x86_64-linux/ghc-7.8.4/bin/" exec-path))
 (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
 (add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
@@ -18,7 +23,7 @@
  '(haskell-process-auto-import-loaded-modules t)
  '(haskell-process-log t)
  '(haskell-process-suggest-remove-import-lines t)
- '(haskell-process-type (quote stack-ghci))
+ '(haskell-process-type (quote stack-ghci)))
 
 
 (defmacro hcRequire (name &rest body)
@@ -32,14 +37,14 @@
   (let ((cs (haskell-process-get-repl-completions (haskell-process) prefix)))
     (remove-if (lambda (c) (string= "" c)) cs)))
 (ac-define-source haskell
-  '((candidates . (hc-ac-haskell-candidates ac-prefix))))
+                  '((candidates . (hc-ac-haskell-candidates ac-prefix))))
 (defun hc-haskell-hook ()
   (add-to-list 'ac-sources 'ac-source-haskell))
 (add-hook 'haskell-mode-hook 'hc-haskell-hook)
 
 ;; cd /src/ && git clone git@github.com:ajnsit/ghc-mod.git
 ;; cd /src/ghc-mod ; git checkout stack-support ; stack build
-(add-to-list 'load-path "/src/ghc-mod/.stack-work/install/x86_64-linux/lts-2.17/7.8.4/lib/x86_64-linux-ghc-7.8.4/ghc-mod-0")
+(add-to-list 'load-path "/Users/jared/Data/development/oss/haskell/ghc-mod/.stack-work/install/x86_64-osx/lts-2.17/7.8.4/lib/x86_64-osx-ghc-7.8.4/ghc-mod-0")
 
 (require 'hs-lint)
 (defun hlint-haskell-mode-hook ()
