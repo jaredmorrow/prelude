@@ -46,11 +46,6 @@
 ;; cd /src/ghc-mod ; git checkout stack-support ; stack build
 (add-to-list 'load-path "/Users/jared/Data/development/oss/haskell/ghc-mod/.stack-work/install/x86_64-osx/lts-2.17/7.8.4/lib/x86_64-osx-ghc-7.8.4/ghc-mod-0")
 
-(require 'hs-lint)
-(defun hlint-haskell-mode-hook ()
-  (local-set-key "\C-cu" 'hs-lint))
-(add-hook 'haskell-mode-hook 'hlint-haskell-mode-hook)
-
 (ac-define-source ghc-mod
                   '((depends ghc)
                     (candidates . (ghc-select-completion-symbol))
