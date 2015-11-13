@@ -57,8 +57,6 @@
                      ac-source-ghc-mod)))
 (add-hook 'haskell-mode-hook 'my-ac-haskell-mode)
 
-(require 'auto-complete-haskell)
-
 (eval-after-load 'haskell-mode
   '(progn
      (define-key haskell-mode-map (kbd "C-u C-c C-l") 'haskell-process-load-or-reload)
