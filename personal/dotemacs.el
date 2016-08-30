@@ -18,5 +18,8 @@
 
 (setq magit-last-seen-setup-instructions "1.4.0")
 
+;; Desktop save
+(desktop-save-mode 1)
+
 ;; Run in daemon mode
 (server-start)
