@@ -23,3 +23,5 @@
 
 ;; Run in daemon mode
 (server-start)
+
+(setq org-agenda-files (list "/Users/jared/Dropbox/Documents/emacs/agenda/tasks.org"))
